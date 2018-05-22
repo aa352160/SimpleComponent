@@ -1,0 +1,72 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        flavorDimensions "1.0"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("keystore.jks")
+            storePassword "testdemo"
+            keyAlias "testdemo"
+            keyPassword "testdemo"
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+
+        release {
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    productFlavors {
+        develop {
+            buildConfigField "int", "ENV_TYPE", "1"
+            applicationId "com.rongke.testdemo.develop"
+            manifestPlaceholders = [
+                    app_name: "Simple Component"
+            ]
+        }
+
+        check {
+            buildConfigField "int", "ENV_TYPE", "2"
+            applicationId "com.rongke.testdemo.check"
+            manifestPlaceholders = [
+                    app_name: "Simple Component"
+            ]
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    compile project(path: ':basemodule')
+    compile project(path: ':module1')
+    compile project(path: ':module2')
+}
